@@ -1,8 +1,10 @@
+'use strict'
 
 console.log('hello')
 
 function printHello() {
     x = 7
+    return x
 }
 
 
