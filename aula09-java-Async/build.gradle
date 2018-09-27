@@ -19,12 +19,13 @@ mainClassName = 'App'
 
 dependencies {
     // This dependency is found on compile classpath of this component and consumers.
-    compile 'com.github.javasync:AsyncFileRw:1.1.0'
+    compile 'com.github.javasync:AsyncFileRw:1.1.2'
 }
 
 // In this section you declare where to find the dependencies of your project
 repositories {
     // Use jcenter for resolving your dependencies.
     // You can declare any Maven/Ivy/file repository here.
-    jcenter()
+    // jcenter()
+    mavenCentral()
 }

@@ -6,24 +6,21 @@ import org.javaync.io.AsyncFiles;
 
 public class App {
     
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         if(args.length == 0) 
             throw new RuntimeException("You must provide the name of the files to read!");
             
         Arrays
             .stream(args)
-            .map(filename -> {
+            .forEach(filename -> {
                 System.out.println("Reading " + filename);
-                return AsyncFiles
-                    .readAll(filename)
-                    .thenAccept( data -> {
+                AsyncFiles
+                    .readAll(filename, (err, data) -> {
                         String lines = new String(data);
                         System.out.println("##################################");
                         System.out.println(lines);
                     });
-            })
-            .skip(1)
-            .findFirst()
-            .ifPresent(res -> res.join());
+            });
+        Thread.sleep(2000);
     }
 }
