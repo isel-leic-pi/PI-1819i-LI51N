@@ -19,11 +19,7 @@ function onSubscription(socket){
     // Reporting.
     console.log('Subscriber connected.')
     const files = process.argv.slice(2)
-    let timeout = 0
-    files.forEach(filename => {
-        setTimeout(() => sendMsgWatching(socket, filename), timeout)
-        timeout += 100
-    })
+    files.forEach(filename => sendMsgWatching(socket, filename))
     
     // Watcher setup.
     const watchers = files
