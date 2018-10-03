@@ -4,9 +4,11 @@
   "description": "",
   "main": "app10-tcp-Json-Flaw-server.js",
   "dependencies": {
-    "mocha": "^5.2.0"
   },
   "scripts": {},
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "mocha": "3.4.2"
+  }
 }
