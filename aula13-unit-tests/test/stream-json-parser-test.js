@@ -1,6 +1,6 @@
 'use strict'
 
-const assert = require('assert')
+const expect = require('chai').expect
 const EventEmitter = require('events').EventEmitter
 const StreamJsonParser = require('../lib/stream-json-parser')
 
@@ -15,14 +15,18 @@ describe('StreamJsonParser', () => {
 
     it('should emit a message event from a single data event', done => {
         client.on('message', message => {
-            assert.deepEqual(message, {foo: 'bar'})
+            expect(message)
+                .to.be.an('object')
+                .and.have.a.property('foo', 'bar')
             done()
         })
         stream.emit('data', '{"foo":"bar"}\n\r')
     })
     it('should emit a message event from a JSON string splitted in 2 data events', done => {
         client.on('message', message => {
-            assert.deepEqual(message, {foo: 'bar'})
+            expect(message)
+                .to.be.an('object')
+                .and.have.a.property('foo', 'bar')
             done()
         })
         stream.emit('data', '{"foo":"b')
@@ -34,10 +38,14 @@ describe('StreamJsonParser', () => {
         let first = true
         client.on('message', message => {
             if(first) {
-                assert.deepEqual(message, msg1)
+                expect(message)
+                    .to.be.an('object')
+                    .and.have.a.property('foo', msg1.foo)
                 first = false
             } else {
-                assert.deepEqual(message, msg2)
+                expect(message)
+                    .to.be.an('object')
+                    .and.have.a.property('foo', msg2.foo)
                 done()
             }
         })
