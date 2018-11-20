@@ -20,17 +20,17 @@ module.exports = (app) => {
 
     function postBundle(req, resp, next) {
         const name = req.query.name
-        bundle.create(name, (err, data) => {
-            if(err) return next(err)
-            resp.json(data)
-        })
+        bundle
+            .create(name)
+            .then(data => resp.json(data))
+            .catch(next)
     }
     function getBundle(req, resp, next) {
         const id = req.params.id
-        bundle.get(id, (err, bundle) => {
-            if(err) return next(err)
-            resp.json(bundle)
-        })
+        bundle
+            .get(id)
+            .then(bundle => resp.json(bundle))
+            .catch(next)
     }
     function resourceNotFond(req, resp, next) {
         next({
@@ -39,7 +39,7 @@ module.exports = (app) => {
         })
     }
     function errorHandler(err, req, res, next) {
-        res.statusCode = err.code
+        res.statusCode = err.statusCode
         res.end(err.error)
     }
 }

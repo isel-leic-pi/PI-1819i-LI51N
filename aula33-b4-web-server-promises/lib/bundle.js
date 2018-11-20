@@ -1,7 +1,6 @@
 'use strict'
 
-const request = require('request')
-const parallel = require('./parallel')
+const rp = require('request-promise')
 
 class Bundle {
 
@@ -19,89 +18,73 @@ class Bundle {
         return new Bundle(es)
     }
 
-    create(name, cb) {
+    create(name) {
         const options = {
             'uri': this.bundlesUrl,
             'json': true,
             'body': { 'name': name, 'books': []}
         }
-        request.post(options, (err, res, body) =>{
-            if(!reportError(201, err, res, body, cb))
-                cb(null, body)
-        })
+        return rp
+                .post(options)
     }
-    get(id, cb) {
+    get(id) {
         const uri = `${this.bundlesUrl}/${id}`
-        request.get(uri, (err, res, body) =>{
-            if(!reportError(200, err, res, body, cb))
-                cb(null, JSON.parse(body)._source)
-        })
+        return rp
+            .get(uri)
+            .then(body => JSON.parse(body)._source)
     }
-    delete(id, cb) {
+    delete(id) {
         const uri = `${this.bundlesUrl}/${id}`
-        request.delete(uri, (err, res, body) =>{
-            if(!reportError(200, err, res, body, cb))
-                cb(null, JSON.parse(body))
-        })
+        return rp
+            .delete(uri)
+            .then(body => JSON.parse(body))
     }
 
-    getBook(bookId, cb) {
-        request.get(`${this.booksUrl}/${bookId}`, (err, res, body) => {
-            if(err) return cb(err)
-            if(res.statusCode != 200) {
-                return cb({
-                    code: res.statusCode,
-                    message: res.statusMessage,
-                    error: body
-                })
-            }
-            cb(null, JSON.parse(body)._source)
-        })
+    getBook(bookId) {
+        return rp
+            .get(`${this.booksUrl}/${bookId}`)
+            .then(body => JSON.parse(body)._source)
     }
     
-    addBook(id, pgid, cb) {
-        const tasks = []
-        tasks[0] = cb => this.getBook(pgid, cb)
-        tasks[1] = cb => this.get(id, cb)
-        parallel(tasks, (err, results) => {
-            if(err) return cb(err)
-            const book = results[0]
-            const bundle = results[1]
-            const idx = bundle.books.findIndex(b => b.id === pgid)
-            if(idx >= 0) 
-                // The book already exists in this bundle so we finish here
-                return cb(null)
-            bundle.books.push({
-                'id': book.id,
-                'title': book.title
-            })
-            const options = {
-                'uri': `${this.bundlesUrl}/${id}`,
-                'json': true,
-                'body': bundle
-            }
-            request.put(options, (err, res, body) => {
-                if(!reportError(200, err, res, body, cb))
-                    cb(null)
-            })
-
-        })
+    addBook(id, pgid) {
+        return Promise
+            .all([this.getBook(pgid), this.get(id)])
+            .then(([book, bundle]) =>  addBookToBundle(id, pgid, book, bundle))
+            .then(([id, bundle]) => this.updateBundle(id, bundle))
     }
+
+    updateBundle(id, bundle){
+        if(!id) return
+        const options = {
+            'uri': `${this.bundlesUrl}/${id}`,
+            'json': true,
+            'body': bundle
+        }
+        return rp
+            .put(options)
+    }
+    
 }
 
-function reportError(statusOk, err, res, body, cb) {
-    if(err) {
-        cb(err)
-        return true
-    }
-    if(res.statusCode != statusOk) {
-        cb({
-            code: res.statusCode,
-            message: res.statusMessage,
-            error: body
-        })
-        return true
-    }
+/**
+ * Return an array with [id, bundle] or undefined if the book
+ * already exists in the bundle.
+ * 
+ * @param {*} id Bundle id
+ * @param {*} pgid Project gutenberg id
+ * @param {*} book 
+ * @param {*} bundle 
+ */
+function addBookToBundle(id, pgid, book, bundle) {
+    const idx = bundle.books.findIndex(b => b.id === pgid)
+    if(idx >= 0) 
+        // The book already exists in this bundle so we finish here
+        return
+    bundle.books.push({
+        'id': book.id,
+        'title': book.title
+    })
+    return [id, bundle]
 }
 
 module.exports = Bundle
