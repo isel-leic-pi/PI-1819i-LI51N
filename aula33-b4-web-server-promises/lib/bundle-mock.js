@@ -1,5 +1,7 @@
 'use strict'
 
+const rp = require('request-promise')
+
 class Bundle {
 
     static init(es) {
@@ -14,40 +16,34 @@ class Bundle {
         this.booksUrl = `http://${es.host}:${es.port}/${es.books_index}/book`
     }
 
-    create(name, cb) {
+    create(name) {
         const id = 127
         bundles[id] = {
             'name': name,
             'books': []
         }
-        cb(null, {'_id': id })
+        return Promise.resolve({ '_id': id})
     }
-    get(id, cb) {
+    get(id) {
         const bundle = bundles[id]
-        if(!bundle) {
-            cb({code: 404})
-        } else {
-            cb(null, bundle)
-        }
+        return !bundle
+            ? Promise.reject({statusCode: 404})
+            : Promise.resolve(bundle)
     }
-    delete(id, cb) {
+    delete(id) {
         const bundle = bundles[id]
-        if(!bundle) {
-            cb({code: 404})
-        } else {
-            delete bundles[id]
-            cb(null)
-        }
+        if(!bundle)
+            return Promise.reject({statusCode: 404}) //cb({code: 404})
+        delete bundles[id]
+        return Promise.resolve() //cb(null)
     }
-    addBook(id, pgid, cb) {
+    addBook(id, pgid) {
         const bundle = bundles[id]
         const book = books[pgid]
-        if(!bundle || !book) {
-            cb({code: 404})
-        } else {
-            bundle.books.push({'id': pgid, 'title': book.title})
-            cb(null)
-        }
+        if(!bundle || !book)
+            return Promise.reject({statusCode: 404}) // cb({code: 404})
+        bundle.books.push({'id': pgid, 'title': book.title})
+        return Promise.resolve() //cb(null)
     }
 }
 
@@ -64,22 +60,6 @@ const books = {
     'pg26203': {
         'id': '26203',
         'title': 'The Adventures of Tom Sawyer'
-    }
-}
-
-
-function reportError(statusOk, err, res, body, cb) {
-    if(err) {
-        cb(err)
-        return true
-    }
-    if(res.statusCode != statusOk) {
-        cb({
-            code: res.statusCode,
-            message: res.statusMessage,
-            error: body
-        })
-        return true
     }
 }
 

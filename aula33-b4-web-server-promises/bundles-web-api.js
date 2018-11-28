@@ -1,7 +1,7 @@
 'use strict'
 
-const Bundle = require('./lib/bundle')
-// const Bundle = require('./lib/bundle-mock')
+// const Bundle = require('./lib/bundle')
+const Bundle = require('./lib/bundle-mock')
 
 const es = {
     host: 'localhost',
@@ -34,7 +34,7 @@ module.exports = (app) => {
     }
     function resourceNotFond(req, resp, next) {
         next({
-            'code': 404,
+            'statusCode': 404,
             'error': 'Resource Not Found!'
         })
     }
