@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>b4</title>
+        <link rel="stylesheet" href="bootstrap.css"> 
+    </head>
+    <body>
+        <div class="container">
+            <h1>b4app</h1>
+            <nav>
+                <ul class="nav nav-pills">
+                    <li class="nav-item"><a href="#" class="nav-link">Home</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link">Book Bundles</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link active">Book Search</a></li>
+
+                </ul>
+            </nav>
+            <hr>
+            <p></p>
+            <form method="GET" action="/search">
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Title:</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="title">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Author:</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="author">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-10">
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </body>
+</html>
