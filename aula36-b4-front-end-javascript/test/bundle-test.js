@@ -24,6 +24,20 @@ describe('Test Bundle API', () => {
         done()
     })
 
+    it('Should search for a book with author Twain', done => {
+        const bundle = Bundle.init(es)
+        bundle
+            .searchBook('', 'Twain')
+            .then(arr => {
+                expect(arr)
+                    .to.be.an('array')
+                    .with.length(10)
+                expect(arr[1])
+                    .to.have.a.property('title', 'Editorial Wild Oats')
+                done()
+            })
+    })
+
     it('Should create a new bundle', done => {
         const bundle = Bundle.init(es)
         bundle
@@ -45,6 +59,7 @@ describe('Test Bundle API', () => {
             })
             .then(() => done())
             .catch(err => {
+                console.log(err)
                 should.not.exist(err)
                 done()
             })

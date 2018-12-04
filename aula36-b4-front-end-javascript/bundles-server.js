@@ -4,11 +4,10 @@ const http = require('http')
 const express = require('express')
 const morgan = require('morgan')
 const bundlesWebApi = require('./bundles-web-api')
-const staticFiles = require('./lib/static-files')
 
 const webServer = express()
 webServer.use(morgan('dev'))
-webServer.use(staticFiles('public'))
+webServer.use(express.static('public'))
 bundlesWebApi(webServer)
 http
     .createServer(webServer)

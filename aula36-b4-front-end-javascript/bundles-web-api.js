@@ -15,8 +15,18 @@ const bundle = Bundle.init(es)
 module.exports = (app) => {
     app.post('/api/bundle', postBundle)
     app.get('/api/bundle/:id', getBundle)
+    app.get('/api/books/search', bookSearch)
     app.use(resourceNotFond)
     app.use(errorHandler)
+
+    function bookSearch(req, resp, next) {
+        const title = req.query.title
+        const authors = req.query.authors
+        bundle
+            .searchBook(title, authors)
+            .then(data => resp.json(data))
+            .catch(next)
+    }
 
     function postBundle(req, resp, next) {
         const name = req.query.name

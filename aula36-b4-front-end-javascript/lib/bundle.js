@@ -24,8 +24,7 @@ class Bundle {
             'json': true,
             'body': { 'name': name, 'books': []}
         }
-        return rp
-                .post(options)
+        return rp.post(options)
     }
     get(id) {
         const uri = `${this.bundlesUrl}/${id}`
@@ -40,6 +39,11 @@ class Bundle {
             .then(body => JSON.parse(body))
     }
 
+    searchBook(title, authors) {
+        return rp
+            .get(`${this.booksUrl}/_search?q=authors:${authors}`)
+            .then(body => JSON.parse(body).hits.hits.map(b => b._source))
+    }
     getBook(bookId) {
         return rp
             .get(`${this.booksUrl}/${bookId}`)
