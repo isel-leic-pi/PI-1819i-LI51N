@@ -40,8 +40,11 @@ class Bundle {
     }
 
     searchBook(title, authors) {
+        if(!title) title = '*'
+        if(!authors) authors = '*'
+        const query = `(title:${title})AND(authors:${authors})`
         return rp
-            .get(`${this.booksUrl}/_search?q=authors:${authors}`)
+            .get(`${this.booksUrl}/_search?q=${query}`)
             .then(body => JSON.parse(body).hits.hits.map(b => b._source))
     }
     getBook(bookId) {

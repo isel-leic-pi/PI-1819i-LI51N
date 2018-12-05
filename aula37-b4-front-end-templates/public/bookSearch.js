@@ -1,9 +1,37 @@
 'use strict'
 
-fetch('http://localhost:3000/api/books/search?title=djfhd&authors=Twain')
-    .then(res => res.json())
-    .then(arr => {
-        console.log(arr[1].title)
-        document.body.innerHTML += JSON.stringify(arr[1])
-    })
-    .catch(err => console.log(err))
+window.onload = () => {
+    document
+        .getElementById('buttonSearch')
+        .addEventListener('click', searchHandler)
+
+    const inputTitle = document.getElementById('inputTitle')
+    const inputAuthors = document.getElementById('inputAuthors')
+    const divSearchResults = document.getElementById('divSearchResults')
+    const searchResultsTemplate = document
+        .getElementById('frameSearchResults')
+        .contentDocument
+        .body.innerText
+    const searchResultsView = Handlebars.compile(searchResultsTemplate)
+
+    function searchHandler(ev){
+        ev.preventDefault()
+        const title = inputTitle.value
+        const authors = inputAuthors.value
+        fetch(`http://localhost:3000/api/books/search?title=${title}&authors=${authors}`)
+            .then(res => res.json())
+            .then(arr => divSearchResults.innerHTML = searchResults(arr))
+            .catch(err => console.log(err))
+    }
+    /**
+     * Returns an HTML partial view binding this template with a Book object.
+     * 
+     * @param {*} books Array of Book objects with: title, authors array and subjects array.
+     */
+    function searchResults(books) {
+        return searchResultsView({books})
+    }
+
+
+}
+
