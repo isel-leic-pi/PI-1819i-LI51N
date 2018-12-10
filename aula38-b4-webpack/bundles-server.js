@@ -7,7 +7,7 @@ const bundlesWebApi = require('./bundles-web-api')
 
 const webServer = express()
 webServer.use(morgan('dev'))
-webServer.use(express.static('public'))
+webServer.use(express.static('dist'))
 bundlesWebApi(webServer)
 http
     .createServer(webServer)
