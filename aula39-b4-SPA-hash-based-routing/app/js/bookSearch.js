@@ -1,7 +1,7 @@
 'use strict'
 
-const Handlebars = require('./../node_modules/handlebars/dist/handlebars.js')
-const searchResultsTemplate = require('./bookSearchResults.hbs')
+const Handlebars = require('./../../node_modules/handlebars/dist/handlebars.js')
+const searchResultsTemplate = require('./../views/bookSearchResults.hbs')
 
 document
     .getElementById('buttonSearch')

@@ -4,24 +4,24 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
     'entry': {
-        index: './app/entry.js'
+        index: './app/js/entry.js'
     },
     mode: 'development',
     devtool: 'source-map',
     plugins: [
         new HtmlWebpackPlugin({
-            template: './app/b4index.html',
+            template: './app/views/b4index.html',
             inject: true,
             chunks: ['index'],
             filename: 'b4index.html',
-            favicon: './app/Frogatto.png'
+            favicon: './app/img/Frogatto.png'
         }),
         new HtmlWebpackPlugin({
-            template: './app/bookSearch.html',
+            template: './app/views/bookSearch.html',
             inject: true,
             chunks: ['index'],
             filename: 'bookSearch.html',
-            favicon: './app/Frogatto.png'
+            favicon: './app/img/Frogatto.png'
         })
     ],
     module: {
@@ -33,11 +33,11 @@ module.exports = {
             loader: 'url-loader?limit=100000',
         },
         {
-            test: /\.(hbs)$/,
+            test: /\.hbs$/,
             use: 'raw-loader'
         },
         {
-            test: /\.(html)$/,
+            test: /\.html$/,
             use: 'html-loader'
         }]
     }
