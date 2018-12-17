@@ -2,7 +2,6 @@
 
 const express = require('express')
 const cookieParser = require('cookie-parser')
-const session = require('express-session')
 /**
  * Bag
  */
@@ -14,18 +13,16 @@ const bag = {
  * Setup express
  */
 const app = express()
-app.use(cookieParser())
-app.use(session({secret: 'keyboard cat', resave: false, saveUninitialized: true }))
 
+app.use(cookieParser())
 app.use((req, resp, next) => {
     console.log(req.cookies)
-    console.log(req.session)
     next()
 })
 app.use((req, resp) => {
-    req.session.username = 'fmcarvalho'
-    req.session.bag = JSON.stringify(bag)
-    req.session.location = 'Lisbon'
+    resp.cookie('username', 'fmcarvalho', {expires: new Date(Date.now() - 1000)})
+    resp.cookie('bag', JSON.stringify(bag))
+    resp.cookie('location', 'Lisbon')
     resp.end()
 })
 /**
