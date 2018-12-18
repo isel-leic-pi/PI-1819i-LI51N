@@ -10,6 +10,7 @@ const webpack = require('webpack')
 const webpackMiddleware = require('webpack-dev-middleware')
 const nconf = require('nconf')
 const bodyParser = require('body-parser')
+const expressSession = require('express-session')
 
 /**
  * Read configurations
@@ -28,6 +29,7 @@ const app = express()
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(morgan('dev'))
+app.use(expressSession({secret: 'keyboard cat', resave: false, saveUninitialized: true }))
 app.use(frontEndMiddleware(isDev))
 /**
  * Add bundle and auth routes

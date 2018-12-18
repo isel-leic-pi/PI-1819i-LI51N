@@ -3,6 +3,9 @@
 const rp = require('request-promise')
 
 class Auth {
+    static init(es) {
+        return new Auth(es)
+    }
 
     /**
      * @param {{host: string, port: number}} es 
@@ -25,3 +28,5 @@ class Auth {
         return user
     }
 }
+
+module.exports = Auth

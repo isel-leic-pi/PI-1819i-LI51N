@@ -10,9 +10,8 @@ module.exports = (divMain) => {
     const txtPassword = document.getElementById('inputPassword')
     const txtUsername = document.getElementById('inputUsername')
 
-    document
-        .getElementById('buttonSignup')
-        .addEventListener('click', signupHander)
+    const bt = document.getElementById('buttonSignup')
+    bt.addEventListener('click', signupHander)
     document
         .getElementById('buttonLogin')
         .addEventListener('click', loginHander)
@@ -32,7 +31,7 @@ module.exports = (divMain) => {
             }
         }
         fetch(url, options)
-            .then(resp => window.location = '#b4index')
+            .then(resp => window.location.hash = '#b4index')
             .catch(err => util.showAlert(err, 'danger'))
     }
     function loginHander(ev) {
