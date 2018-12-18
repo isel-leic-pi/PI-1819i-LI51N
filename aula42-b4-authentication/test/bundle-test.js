@@ -41,7 +41,7 @@ describe('Test Bundle API', () => {
     it('Should create a new bundle', done => {
         const bundle = Bundle.init(es)
         bundle
-            .create('foo')
+            .create('zemanel', 'foo')
             .then(resp => {
                 should.exist(resp)
                 expect(resp)
@@ -63,6 +63,23 @@ describe('Test Bundle API', () => {
                 should.not.exist(err)
                 done()
             })
+    })
+    it('Should get all bundles from user', async () => {
+        const bundle = Bundle.init(es)
+        const resp = await bundle.create('zemanel', 'foo')
+        should.exist(resp)
+        expect(resp)
+            .to.be.an('object')
+            .and.have.a.property('_id')
+        const arr = await bundle.getAll('zemanel')
+        expect(arr)
+            .to.be.an('array')
+        const b = arr.pop()
+        expect(b)
+            .to.have.a.property('name', 'foo')
+        expect(b)
+            .to.have.a.property('_id', resp._id)
+        await bundle.delete(resp._id)
     })      
     it('Should add a book to an existing bundle', done => {
         const bundle = Bundle.init(es)

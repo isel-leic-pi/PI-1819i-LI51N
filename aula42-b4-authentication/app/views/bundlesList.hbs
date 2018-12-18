@@ -1,0 +1,16 @@
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each bundles}}
+            <tr>
+                <td><a href={{_id}}>{{_id}}</a></td>
+                <td>{{name}}</td>
+            </tr>
+        {{/each}}
+    </tbody>
+</table>

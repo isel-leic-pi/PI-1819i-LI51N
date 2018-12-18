@@ -14,6 +14,7 @@ const bundle = Bundle.init(es)
 
 module.exports = (app) => {
     app.post('/api/bundle', postBundle)
+    app.get('/api/bundle', getBundles)
     app.get('/api/bundle/:id', getBundle)
     app.get('/api/books/search', bookSearch)
     app.use(resourceNotFond)
@@ -27,11 +28,18 @@ module.exports = (app) => {
             .then(data => resp.json(data))
             .catch(next)
     }
-
     function postBundle(req, resp, next) {
-        const name = req.query.name
+        req.user = {'_id': 'zemanel'}
+        const name = req.body.name
         bundle
-            .create(name)
+            .create(req.user._id, name)
+            .then(data => resp.json(data))
+            .catch(next)
+    }
+    function getBundles(req, resp, next) {
+        req.user = {'_id': 'zemanel'}
+        bundle
+            .getAll(req.user._id)
             .then(data => resp.json(data))
             .catch(next)
     }
@@ -49,8 +57,8 @@ module.exports = (app) => {
         })
     }
     function errorHandler(err, req, res, next) {
-        res.statusCode = err.statusCode
-        res.end(err.error)
+        res.statusCode = err.statusCode || 500
+        res.json(err.error)
     }
 }
 

@@ -8,6 +8,7 @@ class Bundle {
      * @param {{host: string, port: number, books_index: string, bundle_index: string}} es 
      */
     constructor(es){
+        this.bundlesRefresh = `http://${es.host}:${es.port}/${es.bundles_index}/_refresh`
         this.bundlesUrl = `http://${es.host}:${es.port}/${es.bundles_index}/bundle`
         this.booksUrl = `http://${es.host}:${es.port}/${es.books_index}/book`
     }
@@ -18,14 +19,31 @@ class Bundle {
         return new Bundle(es)
     }
 
-    create(name) {
+    async create(userId, name) {
         const options = {
             'uri': this.bundlesUrl,
             'json': true,
-            'body': { 'name': name, 'books': []}
+            'body': { 'user_id': userId, 'name': name, 'books': []}
         }
-        return rp.post(options)
+        const resp = await rp.post(options)
+        await rp.post(this.bundlesRefresh)
+        return resp
     }
+
+    getAll(userId) {
+        const query = `user_id:${userId}`
+        const url = `${this.bundlesUrl}/_search?q=${query}`
+        return rp
+            .get(url)
+            .then(body => JSON.parse(body).hits.hits)
+            .then(arr => arr.map(item => { return {
+                '_id': item._id,
+                'name': item._source.name,
+                'books': item._source.books
+            }}))
+
+    }
+
     get(id) {
         const uri = `${this.bundlesUrl}/${id}`
         return rp

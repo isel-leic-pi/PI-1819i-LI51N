@@ -8,6 +8,7 @@ const webpackConfig = require('./webpack.config.js')
 const webpack = require('webpack')
 const webpackMiddleware = require('webpack-dev-middleware')
 const nconf = require('nconf')
+const bodyParser = require('body-parser')
 
 /**
  * Read configurations
@@ -23,6 +24,8 @@ console.log('Running ' + NODE_ENV)
  * Setup the express instance
  */
 const app = express()
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
 app.use(morgan('dev'))
 app.use(frontEndMiddleware(isDev))
 /**
