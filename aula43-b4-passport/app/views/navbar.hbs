@@ -15,9 +15,9 @@
         </li>
         <li class="nav-item" id="liAuth">
             {{#if auth}}
-                <a href="/api/signout" class="nav-link">Sign Out</a>
+                <a id="nav#signout" href="#signout" class="nav-link">Sign Out</a>
             {{else}}
-                <a href="#" class="nav-link">Login</a>
+                <a id="nav#login" href="#login" class="nav-link">Login</a>
             {{/if}}
         </li>
         {{#if auth}}

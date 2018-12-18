@@ -4,6 +4,7 @@ const http = require('http')
 const express = require('express')
 const morgan = require('morgan')
 const bundlesWebApi = require('./bundles-web-api')
+const authWebApi = require('./auth-web-api')
 const webpackConfig = require('./webpack.config.js')
 const webpack = require('webpack')
 const webpackMiddleware = require('webpack-dev-middleware')
@@ -29,8 +30,9 @@ app.use(bodyParser.json())
 app.use(morgan('dev'))
 app.use(frontEndMiddleware(isDev))
 /**
- * Add bundle routes
+ * Add bundle and auth routes
  */
+authWebApi(app)
 bundlesWebApi(app)
 /**
  * Starts the web server

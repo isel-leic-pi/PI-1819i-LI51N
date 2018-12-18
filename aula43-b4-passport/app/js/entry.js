@@ -7,6 +7,7 @@ const util = require('./util.js')
 const bookSearch = require('./bookSearch')
 const b4index = require('./b4index')
 const bundles = require('./bundles')
+const login = require('./login')
 const mainView = require('./../views/main.html')
 const navView = Handlebars.compile(require('./../views/navbar.hbs'))
 
@@ -34,6 +35,12 @@ function showView() {
             break
         case '#bookSearch':
             bookSearch(divMain)
+            break
+        case '#login':
+            login(divMain)
+            break
+        case '#signout':
+            // TO DO !!!!
             break
         default:
             divMain.innerHTML = 'Resource not found!'
