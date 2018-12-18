@@ -1,0 +1,30 @@
+<nav class="navbar navbar-expand-lg">
+    <ul class="navbar-nav mr-auto nav-pills">
+        <li class="nav-item">
+            <a id="nav#b4index" href="#b4index" class="nav-link">Home</a>
+        </li>
+        <li class="nav-item">
+            <a id="nav#bundles" href="#bundles" class="nav-link">
+                Book Bundles
+            </a>
+        </li>
+        <li class="nav-item">
+            <a id="nav#bookSearch" href="#bookSearch" class="nav-link">
+                Book Search
+            </a>
+        </li>
+        <li class="nav-item" id="liAuth">
+            {{#if auth}}
+                <a href="/api/signout" class="nav-link">Sign Out</a>
+            {{else}}
+                <a href="#" class="nav-link">Login</a>
+            {{/if}}
+        </li>
+        {{#if auth}}
+            <span class="navbar-text">
+                {{fullname}}
+            </span>
+        {{/if}}
+    </ul>
+</nav>
+
