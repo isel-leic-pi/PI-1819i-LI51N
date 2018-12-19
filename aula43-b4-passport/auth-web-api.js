@@ -33,10 +33,18 @@ module.exports = (app) => {
         })
     }
     function login(req, resp, next) {
-        next()
+        authService
+            .authenticate(req.body.username, req.body.password)
+            .then(user => {
+                req.login(user, (err) => {
+                    if(err) next(err)
+                    else resp.json(user)
+                })
+            })
+            .catch(err => next(err))
     }
     function logout(req, resp, next) {
-        next()
+        next({'statusCode': 500, 'err': 'Not implemented!'})
     }
     function signup(req, resp, next) {
         authService
@@ -46,7 +54,6 @@ module.exports = (app) => {
                     if(err) next(err)
                     else resp.json(user)
                 })
-
             })
     }
 }

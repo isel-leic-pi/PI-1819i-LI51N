@@ -3,15 +3,16 @@
 const util = require('./util.js')
 const loginView = require('./../views/login.html')
 
-module.exports = (divMain) => {
+module.exports = (divMain, getAuthAndInsertNavbar) => {
     divMain.innerHTML = loginView
 
     const txtFullname = document.getElementById('inputFullname')
     const txtPassword = document.getElementById('inputPassword')
     const txtUsername = document.getElementById('inputUsername')
 
-    const bt = document.getElementById('buttonSignup')
-    bt.addEventListener('click', signupHander)
+    document
+        .getElementById('buttonSignup')
+        .addEventListener('click', signupHander)
     document
         .getElementById('buttonLogin')
         .addEventListener('click', loginHander)
@@ -31,10 +32,36 @@ module.exports = (divMain) => {
             }
         }
         fetch(url, options)
-            .then(resp => window.location.hash = '#b4index')
+            .then(() => {
+                window.location.hash = '#b4index'
+                getAuthAndInsertNavbar()
+            })
             .catch(err => util.showAlert(err, 'danger'))
     }
-    function loginHander(ev) {
+    async function loginHander(ev) {
         ev.preventDefault()
+        const url = 'http://localhost:3000/api/auth/login'
+        const options = {
+            method: 'POST',
+            body: JSON.stringify({
+                'username': txtUsername.value,
+                'password': txtPassword.value
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+        const resp = await fetch(url, options)
+        try{
+            if(resp.status == 200){
+                window.location.hash = '#b4index'
+                getAuthAndInsertNavbar()
+            } else {
+                const body = await resp.json()
+                util.showAlert(`${resp.status} ${resp.statusText}: ${JSON.stringify(body)}`)
+            }    
+        } catch(err){
+            util.showAlert(JSON.stringify(err))
+        }
     }
 }

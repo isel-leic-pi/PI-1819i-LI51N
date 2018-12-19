@@ -10,20 +10,25 @@ const bundles = require('./bundles')
 const login = require('./login')
 const mainView = require('./../views/main.html')
 const navView = Handlebars.compile(require('./../views/navbar.hbs'))
-
+/**
+ * Add mainView and get placeholders references: divMain and divNavbar
+ */
 document.body.innerHTML = mainView
 const divMain = document.getElementById('divMain')
 const divNavbar = document.getElementById('divNavbar')
-
-util.fetchJSON('/api/auth/session')
-    .catch(err => util.showAlert('fetch /api/auth/session: ' + err))
-    .then(session => divNavbar.innerHTML = navView(session))
-
-
+/**
+ * Gets the authentication session and insert the navbar.
+ */
+getAuthAndInsertNavbar()
+/**
+ * Add handlers for navigation menu
+ */
 window.onhashchange = showView
 window.onload = showView
 util.showAlert('b4app is working!', 'info')
-
+/**
+ * Navigation handler that dispatches to the corresponding front-end function.
+ */
 function showView() {
     const path = window.location.hash
     switch(path) {
@@ -37,7 +42,7 @@ function showView() {
             bookSearch(divMain)
             break
         case '#login':
-            login(divMain)
+            login(divMain, getAuthAndInsertNavbar)
             break
         case '#signout':
             // TO DO !!!!
@@ -47,6 +52,10 @@ function showView() {
     }
     updateNav(path)
 }
+/**
+ * Updates the navigation bar with the active menu option.
+ * @param {String} path 
+ */
 function updateNav(path){
     // Deactivate previous anchor
     const prev = document.querySelector('a.active')
@@ -56,3 +65,13 @@ function updateNav(path){
     const option = document.getElementById('nav' + path)
     if(option) option.classList.add('active')
 }
+/**
+ * Fetches the authentication session from /api/auth and 
+ * inserts the navbar with the corresponding state.
+ */
+function getAuthAndInsertNavbar() {
+    util.fetchJSON('/api/auth/session')
+        .catch(err => util.showAlert('fetch /api/auth/session: ' + JSON.stringify(err)))
+        .then(session => divNavbar.innerHTML = navView(session))
+}
+

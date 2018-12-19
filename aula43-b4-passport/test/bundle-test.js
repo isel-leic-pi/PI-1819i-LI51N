@@ -74,11 +74,7 @@ describe('Test Bundle API', () => {
         const arr = await bundle.getAll('zemanel')
         expect(arr)
             .to.be.an('array')
-        const b = arr.pop()
-        expect(b)
-            .to.have.a.property('name', 'foo')
-        expect(b)
-            .to.have.a.property('_id', resp._id)
+            .that.deep.include({'name': 'foo', '_id': resp._id, 'books': []})
         await bundle.delete(resp._id)
     })      
     it('Should add a book to an existing bundle', done => {

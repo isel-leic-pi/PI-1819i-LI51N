@@ -3,6 +3,7 @@
 const Handlebars = require('./../../node_modules/handlebars/dist/handlebars.js')
 const searchResultsTemplate = require('./../views/bookSearchResults.hbs')
 const bookSearchView = require('./../views/bookSearch.html')
+const util = require('./util')
 
 module.exports = (divMain) => {
 
@@ -20,10 +21,9 @@ module.exports = (divMain) => {
         ev.preventDefault()
         const title = inputTitle.value
         const authors = inputAuthors.value
-        fetch(`http://localhost:3000/api/books/search?title=${title}&authors=${authors}`)
-            .then(res => res.json())
+        util.fetchJSON(`http://localhost:3000/api/books/search?title=${title}&authors=${authors}`)
             .then(arr => divSearchResults.innerHTML = searchResults(arr))
-            .catch(err => console.log(err))
+            .catch(err => util.showAlert('fetch /api/books/search: ' + JSON.stringify(err)))
     }
     /**
      * Returns an HTML partial view binding this template with a Book object.

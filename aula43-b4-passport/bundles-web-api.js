@@ -2,6 +2,7 @@
 
 const Bundle = require('./lib/bundle')
 // const Bundle = require('./lib/bundle-mock')
+const passport = require('passport')
 
 const es = {
     host: 'localhost',
@@ -13,12 +14,22 @@ const es = {
 const bundle = Bundle.init(es)
 
 module.exports = (app) => {
+    app.use(checkAuthentication)
     app.post('/api/bundle', postBundle)
     app.get('/api/bundle', getBundles)
     app.get('/api/bundle/:id', getBundle)
     app.get('/api/books/search', bookSearch)
     app.use(resourceNotFond)
     app.use(errorHandler)
+
+    function checkAuthentication(req, resp, next) {
+        if(req.isAuthenticated()) 
+            next()
+        else next({
+            'statusCode': 401,
+            'err': 'Cannot access /api/bundle by unauthenticated users!'
+        })
+    }
 
     function bookSearch(req, resp, next) {
         const title = req.query.title
@@ -29,7 +40,6 @@ module.exports = (app) => {
             .catch(next)
     }
     function postBundle(req, resp, next) {
-        req.user = {'_id': 'zemanel'}
         const name = req.body.name
         bundle
             .create(req.user._id, name)
@@ -37,7 +47,6 @@ module.exports = (app) => {
             .catch(next)
     }
     function getBundles(req, resp, next) {
-        req.user = {'_id': 'zemanel'}
         bundle
             .getAll(req.user._id)
             .then(data => resp.json(data))
@@ -58,7 +67,10 @@ module.exports = (app) => {
     }
     function errorHandler(err, req, res, next) {
         res.statusCode = err.statusCode || 500
-        res.json(err.error)
+        const error = err instanceof Error
+            ? { 'message': err.message, 'stack': err.stack}
+            : err
+        res.json(error)
     }
 }
 
